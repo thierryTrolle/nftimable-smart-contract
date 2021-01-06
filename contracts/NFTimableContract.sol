@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
-// import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "./ERC1155NFTimable.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155Holder.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -20,17 +19,22 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
     //when customer bought a NFT
     event EventBuyingCollectible(address buyer, uint256 id,uint256 amountNFT);
 
-    //when customer approve
-    event EventApprove(address approvedAddress);
-    
+    //when the customer resells a NFT
+    event EventResellCollectible(address seller, uint256 id,uint256 amountNFT);
 
-    //to test FIXME 
-    event EventControl(address owner, address caller);
+    //When owner activate the resell
+    event EventActivatedResellID(uint256 id,bool activate);
 
-    // address private NFTowner=0xeFaA9e4492B3E352c7baDdFc3AA11e22BFB3C59E;
+    event Eventwithdrawal(address addressWithdraw,uint256 amount);
 
-    //Mapping from idNft to nftPrice in ETH
+    //Mapping from NFTid to NFTPrice in ETH
     mapping(uint256=>uint256) public nftPriceUnitById;
+
+    //Collection activating for resell
+    mapping(uint256=>bool) public idResellActivate;
+
+    //Withdraw address=>ammount in eth
+    mapping(address=>uint256) public withdrawByAddress;
 
     constructor() public ERC1155NFTimable("https://nftimable.com/nft/{id}.json") {
         setOwnerNFT(address(this));
@@ -52,10 +56,10 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
     function buy(uint256 id, uint256 amountNFT) public payable nonReentrant{
 
         // emit EventControl(owner(), msg.sender);
-        require(nftPriceUnitById[id]!=0,"Price doesn't exist");
+        require(nftPriceUnitById[id]!=0,"NFTIMABLE:Price doesn't exist");
         uint256 price = nftPriceUnitById[id].mul(amountNFT);
 
-        require(msg.value==price,"not enought amount");
+        require(msg.value==price,"NFTIMABLE:Not enought amount");
 
         lockedTransfert=false;
         safeTransferFrom(address(this), msg.sender, id, amountNFT, "");
@@ -65,9 +69,43 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
 
     }
 
+    //activate collection for resell
+    function activateResellID(uint256 id, bool activate) public onlyOwner{
+        idResellActivate[id]=activate;
+        emit EventActivatedResellID(id,activate);
+    }
+
+    //check if collection open to resell
+    function isIdActivateForResell(uint256 id) public view returns (bool){
+        return idResellActivate[id];
+    }
+
     //Customer want to resell NFT
-    function reSell() public {
+    function reSell(uint256 id, uint256 amountNFT) public nonReentrant {
+        require(isIdActivateForResell(id),"NFTIMABLE:Resell not activated wet");
         
+        lockedTransfert=false;
+        safeTransferFrom(msg.sender, address(this), id, amountNFT, "");
+        lockedTransfert=true;
+
+        uint256 price = nftPriceUnitById[id].mul(amountNFT);
+        withdrawByAddress[msg.sender]=withdrawByAddress[msg.sender].add(price);
+
+        emit EventResellCollectible(msg.sender, id,amountNFT);
+    }
+
+    //customer withdrawal 
+    function withdraw() public nonReentrant{
+        require(withdrawByAddress[msg.sender]>0,"NFTIMABLE:Nothing to refund");
+        require(address(this).balance>withdrawByAddress[msg.sender],"NFTIMABLE:Not enought amount to withdraw");
+
+        uint256 amountToWithdraw=withdrawByAddress[msg.sender];
+        msg.sender.transfer(amountToWithdraw);
+
+        withdrawByAddress[msg.sender]=0;
+
+        Eventwithdrawal(msg.sender,amountToWithdraw);
+
     }
 
      //payable obligation
