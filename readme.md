@@ -1,4 +1,4 @@
-# NFTimable smartcontract on Ethereum
+# NFTimable Smartcontract on Ethereum
 
 NFTIMABLE is a platform that offers the possibility to buy non-fungible tokens (NFTs) created on the Ethereum Blockchain representing different categories of properties (real estate, parking, business, arts, renewable energies...).
 This project is the solidity smartcontract that manages the NFTs.
@@ -7,7 +7,7 @@ This project is the solidity smartcontract that manages the NFTs.
 ## prerequisite
 
 you need to install the following components:
-command line is for debian system :)
+(command line is for debian system :))
 
 * [node.js](https://nodejs.org/en/) - evented I/O for the backend and npm management package.
 ```sh
