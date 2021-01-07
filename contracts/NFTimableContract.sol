@@ -24,7 +24,11 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
     //When owner activate the resell
     event EventActivatedResellID(uint256 id,bool activate);
 
+    //When customer withdraw after resell
     event Eventwithdrawal(address addressWithdraw,uint256 amount);
+
+    //When transfert from contract to adress
+    event EventTransferTo(address addressToTransfert, uint256 amountToWithdraw);
 
     //Mapping from NFTid to NFTPrice in ETH
     mapping(uint256=>uint256) public nftPriceUnitById;
@@ -95,7 +99,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
 
     //customer withdrawal 
     function withdraw() public nonReentrant{
-        require(withdrawByAddress[msg.sender]>0,"NFTIMABLE:Nothing to refund");
+        require(withdrawByAddress[msg.sender]>=0,"NFTIMABLE:Nothing to refund");
         require(address(this).balance>withdrawByAddress[msg.sender],"NFTIMABLE:Not enought amount to withdraw");
 
         uint256 amountToWithdraw=withdrawByAddress[msg.sender];
@@ -104,7 +108,13 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         withdrawByAddress[msg.sender]=0;
 
         Eventwithdrawal(msg.sender,amountToWithdraw);
+    }
 
+    //transfer eth from contrat to address
+    function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant (){
+        require(address(this).balance>=amountToWithdraw,"NFTIMABLE:Not enought amount to transfertTo");
+        addressToTransfer.transfer(amountToWithdraw);
+        emit EventTransferTo(addressToTransfer, amountToWithdraw);
     }
 
      //payable obligation
