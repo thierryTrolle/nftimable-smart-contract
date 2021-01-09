@@ -31,8 +31,8 @@ contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
     //Address who stock NFT
     address private ownerNFT;
 
-    //If false, you can transfert, only implement class can unlock
-    bool internal lockedTransfert;
+    //If true, you can transfer, only function use allowTransfer() modifier is able to transfer
+    bool private _unlockedTransfer;
 
     // Mapping from token ID to account balances
     mapping (uint256 => mapping(address => uint256)) private _balances;
@@ -72,6 +72,19 @@ contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         // register the supported interfaces to conform to ERC1155MetadataURI via ERC165
         _registerInterface(_INTERFACE_ID_ERC1155_METADATA_URI);
+
+        _unlockedTransfer=false;
+    }
+
+    /**
+     * @dev Allow function to transfer NFT
+     */
+    modifier allowTransfer() {
+        _unlockedTransfer=true;
+
+        _;
+
+        _unlockedTransfer=false;
     }
 
     function setOwnerNFT(address owner) internal {
@@ -164,7 +177,7 @@ contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
         override
     {
         require(to != address(0), "ERC1155: transfer to the zero address");
-        require(!lockedTransfert,"ERC1155: transfert locked");
+        require(_unlockedTransfer,"ERC1155: transfert locked");
         require(isApprovedForAll(from, to),"ERC1155 NFTIMMABLE: only transfert for or to the contract");
 
         address operator = _msgSender();
@@ -195,7 +208,7 @@ contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
     {
         require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
         require(to != address(0), "ERC1155: transfer to the zero address");
-        require(!lockedTransfert,"ERC1155: transfert locked");
+        require(_unlockedTransfer,"ERC1155: transfert locked");
         require(isApprovedForAll(from, to),"ERC1155 NFTIMMABLE: only transfert for or to the contract");
 
         address operator = _msgSender();

@@ -7,7 +7,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-
+/// @title Smart contract of NFTimable
+/// @author NFTimable Team
+/// @notice It's entry function of NFTimable service
+/// @dev All function calls are currently implemented without side effects
 contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, ReentrancyGuard{
 
     using SafeMath for uint256;
@@ -41,55 +44,60 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
 
     constructor() public ERC1155NFTimable("https://nftimable.com/nft/{id}.json") {
         setOwnerNFT(address(this));
-        lockedTransfert=true;
     }
 
-    /**
-     * @dev Create NFT with id and amount
-     */
+    /// @notice Create NFT collection. 
+    /// @dev 
+    /// @param id : id of collection, allows to personalise the uri to the json.
+    /// @param amount : number of NFT in collectible.
+    /// @param nftPriceUnit : price of one NFT in ETH
     function createCollectible(uint256 id, uint256 amount, uint256 nftPriceUnit) public onlyOwner{
         nftPriceUnitById[id]=nftPriceUnit;
         _mint(address(this), id, amount, "");
         emit EventCreatingCollectible(id,nftPriceUnit);
     }
 
-    /**
-     * Buy collectible 
-     */
-    function buy(uint256 id, uint256 amountNFT) public payable nonReentrant{
+    /// @notice Buy NFT of collection. 
+    /// @dev FIXME if the customer wants to buy several NFT so you have to implement buy with safeBatchTransfer
+    /// @param id : number of NFT in collectible.
+    /// @param amountNFT : price of one NFT in ETH
+    function buy(uint256 id, uint256 amountNFT) public payable nonReentrant allowTransfer{
 
-        // emit EventControl(owner(), msg.sender);
         require(nftPriceUnitById[id]!=0,"NFTIMABLE:Price doesn't exist");
         uint256 price = nftPriceUnitById[id].mul(amountNFT);
 
         require(msg.value==price,"NFTIMABLE:Not enought amount");
-
-        lockedTransfert=false;
+        
         safeTransferFrom(address(this), msg.sender, id, amountNFT, "");
-        lockedTransfert=true;
 
         emit EventBuyingCollectible(msg.sender, id, amountNFT);
 
     }
 
-    //activate collection for resell
+    /// @notice activate collection for resell. 
+    /// @dev NFTs can only be resold when the entire collection is sold. 
+    /// @param id : id of collection.
+    /// @param activate : if activate, customer can resell NFT of collection.
     function activateResellID(uint256 id, bool activate) public onlyOwner{
         idResellActivate[id]=activate;
         emit EventActivatedResellID(id,activate);
     }
 
-    //check if collection open to resell
+    /// @notice activate collectible for resell. 
+    /// @dev NFTs can only be resold when the entire collection is sold. 
+    /// @param id : id of collection.
     function isIdActivateForResell(uint256 id) public view returns (bool){
         return idResellActivate[id];
     }
 
-    //Customer want to resell NFT
-    function reSell(uint256 id, uint256 amountNFT) public nonReentrant {
+    /// @notice activate a collection for resell. 
+    /// @dev withdraw is manage by back when the NFT is actually resold  
+    /// @param id : id of collection.
+    /// @param amountNFT : number NFT of collection to resell
+    function reSell(uint256 id, uint256 amountNFT) public allowTransfer{
         require(isIdActivateForResell(id),"NFTIMABLE:Resell not activated wet");
         
-        lockedTransfert=false;
         safeTransferFrom(msg.sender, address(this), id, amountNFT, "");
-        lockedTransfert=true;
 
         uint256 price = nftPriceUnitById[id].mul(amountNFT);
         withdrawByAddress[msg.sender]=withdrawByAddress[msg.sender].add(price);
@@ -97,7 +105,8 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         emit EventResellCollectible(msg.sender, id,amountNFT);
     }
 
-    //customer withdrawal 
+    /// @notice withdraw ETH after resold. 
+    /// @dev 
     function withdraw() public nonReentrant{
         require(withdrawByAddress[msg.sender]>=0,"NFTIMABLE:Nothing to refund");
         require(address(this).balance>withdrawByAddress[msg.sender],"NFTIMABLE:Not enought amount to withdraw");
@@ -110,8 +119,9 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         Eventwithdrawal(msg.sender,amountToWithdraw);
     }
 
-    //transfer eth from contrat to address
-    function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant (){
+    /// @notice transfer eth from contrat to address 
+    /// @dev 
+    function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant(){
         require(address(this).balance>=amountToWithdraw,"NFTIMABLE:Not enought amount to transfertTo");
         addressToTransfer.transfer(amountToWithdraw);
         emit EventTransferTo(addressToTransfer, amountToWithdraw);
