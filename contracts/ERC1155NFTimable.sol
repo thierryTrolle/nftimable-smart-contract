@@ -80,6 +80,8 @@ contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
      * @dev Allow function to transfer NFT
      */
     modifier allowTransfer() {
+        require(_unlockedTransfer==false,"ERC1155NFTimable:Re-Entrancy");
+        
         _unlockedTransfer=true;
 
         _;

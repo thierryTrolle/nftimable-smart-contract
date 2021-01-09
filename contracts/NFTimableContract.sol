@@ -61,7 +61,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
     /// @dev FIXME if the customer wants to buy several NFT so you have to implement buy with safeBatchTransfer
     /// @param id : number of NFT in collectible.
     /// @param amountNFT : price of one NFT in ETH
-    function buy(uint256 id, uint256 amountNFT) public payable nonReentrant allowTransfer{
+    function buy(uint256 id, uint256 amountNFT) public payable allowTransfer{
 
         require(nftPriceUnitById[id]!=0,"NFTIMABLE:Price doesn't exist");
         uint256 price = nftPriceUnitById[id].mul(amountNFT);
@@ -121,7 +121,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
 
     /// @notice transfer eth from contrat to address 
     /// @dev 
-    function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant(){
+    function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant (){
         require(address(this).balance>=amountToWithdraw,"NFTIMABLE:Not enought amount to transfertTo");
         addressToTransfer.transfer(amountToWithdraw);
         emit EventTransferTo(addressToTransfer, amountToWithdraw);
