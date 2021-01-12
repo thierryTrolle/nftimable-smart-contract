@@ -1,4 +1,4 @@
-All function calls are currently implemented without side effects
+It's entry function of NFTimable service
 
 # Functions:
 

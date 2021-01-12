@@ -9,8 +9,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /// @title Smart contract of NFTimable
 /// @author NFTimable Team
-/// @notice It's entry function of NFTimable service
-/// @dev All function calls are currently implemented without side effects
+/// @dev It's entry function of NFTimable service
 contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, ReentrancyGuard{
 
     using SafeMath for uint256;

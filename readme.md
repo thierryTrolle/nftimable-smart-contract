@@ -12,7 +12,7 @@ You can regenerate it with the following command:
 npm run docify
 ```
 
-Current documentation can be viewed [here](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/docgen/SUMMARY.md).
+Current documentation can be viewed [here](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/docgen/SUMMARY.md)  (note: internal link does not work on github, prefer your markdown client).
 
 ## prerequisite
 
