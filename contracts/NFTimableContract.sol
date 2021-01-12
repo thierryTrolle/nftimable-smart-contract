@@ -42,6 +42,8 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
     //Withdraw address=>ammount in eth
     mapping(address=>uint256) public withdrawByAddress;
 
+    /// @notice Constructor. 
+    /// @dev must indicate setOwnerNFT
     constructor() public ERC1155NFTimable("https://nftimable.com/nft/{id}.json") {
         setOwnerNFT(address(this));
     }
@@ -86,6 +88,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
     /// @notice activate collectible for resell. 
     /// @dev NFTs can only be resold when the entire collection is sold. 
     /// @param id : id of collection.
+    /// @return : true if collection activate for resell
     function isIdActivateForResell(uint256 id) public view returns (bool){
         return idResellActivate[id];
     }
