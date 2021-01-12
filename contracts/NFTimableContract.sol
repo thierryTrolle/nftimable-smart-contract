@@ -15,54 +15,52 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
 
     using SafeMath for uint256;
 
-    //When creating collectible
+    /// @dev When creating collectible
     event EventCreatingCollectible(uint256 id, uint256 nftPriceUnit);
 
-    //when customer bought a NFT
+    /// @dev when customer bought a NFT
     event EventBuyingCollectible(address buyer, uint256 id,uint256 amountNFT);
 
-    //when the customer resells a NFT
+    /// @dev when the customer resells a NFT
     event EventResellCollectible(address seller, uint256 id,uint256 amountNFT);
 
-    //When owner activate the resell
+    /// @dev When owner activate the resell
     event EventActivatedResellID(uint256 id,bool activate);
 
-    //When customer withdraw after resell
+    /// @dev When customer withdraw after resell
     event Eventwithdrawal(address addressWithdraw,uint256 amount);
 
-    //When transfert from contract to adress
+    /// @dev  When transfert from contract to adress
     event EventTransferTo(address addressToTransfert, uint256 amountToWithdraw);
 
-    //Mapping from NFTid to NFTPrice in ETH
+    /// @dev  Mapping from NFTid to NFTPrice in ETH
     mapping(uint256=>uint256) public nftPriceUnitById;
 
-    //Collection activating for resell
+    /// @dev Collection activating for resell
     mapping(uint256=>bool) public idResellActivate;
 
-    //Withdraw address=>ammount in eth
+    /// @dev Withdraw address=>ammount in eth
     mapping(address=>uint256) public withdrawByAddress;
 
-    /// @notice Constructor. 
+
     /// @dev must indicate setOwnerNFT
     constructor() public ERC1155NFTimable("https://nftimable.com/nft/{id}.json") {
         setOwnerNFT(address(this));
     }
 
-    /// @notice Create NFT collection. 
-    /// @dev 
-    /// @param id : id of collection, allows to personalise the uri to the json.
-    /// @param amount : number of NFT in collectible.
-    /// @param nftPriceUnit : price of one NFT in ETH
+    /// @dev Create NFT collection.
+    /// @param id  id of collection, allows to personalise the uri to the json.
+    /// @param amount  number of NFT in collectible.
+    /// @param nftPriceUnit  price of one NFT in ETH
     function createCollectible(uint256 id, uint256 amount, uint256 nftPriceUnit) public onlyOwner{
         nftPriceUnitById[id]=nftPriceUnit;
         _mint(address(this), id, amount, "");
         emit EventCreatingCollectible(id,nftPriceUnit);
     }
 
-    /// @notice Buy NFT of collection. 
-    /// @dev FIXME if the customer wants to buy several NFT so you have to implement buy with safeBatchTransfer
-    /// @param id : number of NFT in collectible.
-    /// @param amountNFT : price of one NFT in ETH
+    /// @dev Buy NFT of collection, FIXME if the customer wants to buy several NFT so you have to implement buy with safeBatchTransfer
+    /// @param id  number of NFT in collectible.
+    /// @param amountNFT  price of one NFT in ETH
     function buy(uint256 id, uint256 amountNFT) public payable allowTransfer{
 
         require(nftPriceUnitById[id]!=0,"NFTIMABLE:Price doesn't exist");
@@ -76,27 +74,24 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
 
     }
 
-    /// @notice activate collection for resell. 
-    /// @dev NFTs can only be resold when the entire collection is sold. 
-    /// @param id : id of collection.
-    /// @param activate : if activate, customer can resell NFT of collection.
+    /// @dev activate collection for resell. NFTs can only be resold when the entire collection is sold. 
+    /// @param id  id of collection.
+    /// @param activate  if activate, customer can resell NFT of collection.
     function activateResellID(uint256 id, bool activate) public onlyOwner{
         idResellActivate[id]=activate;
         emit EventActivatedResellID(id,activate);
     }
 
-    /// @notice activate collectible for resell. 
-    /// @dev NFTs can only be resold when the entire collection is sold. 
-    /// @param id : id of collection.
-    /// @return : true if collection activate for resell
+    /// @dev activate collectible for resell, NFTs can only be resold when the entire collection is sold. 
+    /// @param id  id of collection.
+    /// @return  true if collection activate for resell
     function isIdActivateForResell(uint256 id) public view returns (bool){
         return idResellActivate[id];
     }
 
-    /// @notice activate a collection for resell. 
-    /// @dev withdraw is manage by back when the NFT is actually resold  
-    /// @param id : id of collection.
-    /// @param amountNFT : number NFT of collection to resell
+    /// @dev activate a collection for resell, withdraw is manage by back when the NFT is actually resold  
+    /// @param id  id of collection.
+    /// @param amountNFT  number NFT of collection to resell
     function reSell(uint256 id, uint256 amountNFT) public allowTransfer{
         require(isIdActivateForResell(id),"NFTIMABLE:Resell not activated wet");
         
@@ -108,8 +103,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         emit EventResellCollectible(msg.sender, id,amountNFT);
     }
 
-    /// @notice withdraw ETH after resold. 
-    /// @dev 
+    /// @dev withdraw ETH after resold.
     function withdraw() public nonReentrant{
         require(withdrawByAddress[msg.sender]>=0,"NFTIMABLE:Nothing to refund");
         require(address(this).balance>withdrawByAddress[msg.sender],"NFTIMABLE:Not enought amount to withdraw");
@@ -122,8 +116,9 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         Eventwithdrawal(msg.sender,amountToWithdraw);
     }
 
-    /// @notice transfer eth from contrat to address 
-    /// @dev 
+    /// @dev transfer eth from contrat to address
+    /// @param addressToTransfer  address that receives the funds  
+    /// @param amountToWithdraw  amount in ETH
     function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant (){
         require(address(this).balance>=amountToWithdraw,"NFTIMABLE:Not enought amount to transfertTo");
         addressToTransfer.transfer(amountToWithdraw);

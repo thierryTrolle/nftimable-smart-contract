@@ -3,6 +3,16 @@
 [NFTimable](https://www.nftimable.com) is a platform that offers the possibility to buy non-fungible tokens (NFTs) created on the Ethereum Blockchain representing different categories of properties (real estate, parking, business, arts, renewable energies...).
 This project is the solidity smartcontract that manages the NFTs.
 
+## documentation
+
+The documentation is generated with [solidity-docgen](https://github.com/OpenZeppelin/solidity-docgen).
+
+You can regenerate it with the following command:
+```sh
+npm run docify
+```
+
+Current documentation can be viewed [here](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/docgen/SUMMARY.md).
 
 ## prerequisite
 

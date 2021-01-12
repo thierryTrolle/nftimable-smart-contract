@@ -1,10 +1,10 @@
-Implementation of the basic standard multi-token.
+Implementation of the basic standard multi-token to comply with NFTmable's management rules.
 
 See https://eips.ethereum.org/EIPS/eip-1155
 
 Originally based on code by Enjin: https://github.com/enjin/erc-1155
 
-_Available since v3.1._
+_This basis is inspired by openzeppelin ERC1155 v3.3.0_
 
 # Functions:
 
@@ -79,6 +79,8 @@ All transfers are managed by NFTimableContract with the attribute lockedTransfer
 # Function `safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)` {#ERC1155NFTimable-safeTransferFrom-address-address-uint256-uint256-bytes-}
 
 See {IERC1155-safeTransferFrom}.
+
+Must overide this method and use allowTransfer() modifier
 
 # Function `safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] amounts, bytes data)` {#ERC1155NFTimable-safeBatchTransferFrom-address-address-uint256---uint256---bytes-}
 

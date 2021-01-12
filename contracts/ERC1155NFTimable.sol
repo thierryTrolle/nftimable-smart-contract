@@ -12,11 +12,11 @@ import "@openzeppelin/contracts/utils/Address.sol";
 
 /**
  *
- * @dev Implementation of the basic standard multi-token.
+ * @dev Implementation of the basic standard multi-token to comply with NFTmable's management rules.
  * See https://eips.ethereum.org/EIPS/eip-1155
  * Originally based on code by Enjin: https://github.com/enjin/erc-1155
  *
- * _Available since v3.1._
+ * _This basis is inspired by openzeppelin ERC1155 v3.3.0_
  */
 contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
     using SafeMath for uint256;
@@ -81,7 +81,7 @@ contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
      */
     modifier allowTransfer() {
         require(_unlockedTransfer==false,"ERC1155NFTimable:Re-Entrancy");
-        
+
         _unlockedTransfer=true;
 
         _;
@@ -166,6 +166,7 @@ contract ERC1155NFTimable is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
     /**
      * @dev See {IERC1155-safeTransferFrom}.
+     * Must overide this method and use allowTransfer() modifier
      */
     function safeTransferFrom(
         address from,

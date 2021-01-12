@@ -23,7 +23,7 @@
     "url": "git+https://github.com/thierryTrolle/nftimable-smart-contract.git"
   },
   "author": "Thierry Trollé",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/thierryTrolle/nftimable-smart-contract/issues"
   },
