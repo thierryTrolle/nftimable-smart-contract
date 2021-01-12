@@ -12,6 +12,8 @@ You can regenerate it with the following command:
 npm run docify
 ```
 
+personalize template with [contract.hbs](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/docgen/contract.hbs).
+
 Current documentation can be viewed [here](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/docgen/SUMMARY.md)  (note: internal link does not work on github, prefer your markdown client).
 
 ## prerequisite
