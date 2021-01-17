@@ -99,9 +99,9 @@ contract("NFTimableContract", function (accounts) {
         assert.equal(result.receipt.status, true, "withdraw fail");
     });
 
-    it("Je le transfert d ETH vers une adresse avec transfertTo", async () => {
+    it("Je teste le transfert d ETH vers une adresse avec transfertTo", async () => {
 
-        //Given
+        // Given
         let id = new BN(1);
         let amount = new BN(10);
         let nftPriceUnit = web3.utils.toWei('1', "ether");
@@ -110,17 +110,46 @@ contract("NFTimableContract", function (accounts) {
         await NFTimableContractInstance.createCollectible(id, amount, nftPriceUnit, { from: user1 });
         await NFTimableContractInstance.buy(id, new BN(2), { from: user2, to: NFTimableContractInstance.address, value: ethPrice, gas: 0 })
 
-        //when 
+        // when 
         let balanceBeforeTransfer=await web3.utils.fromWei(await web3.eth.getBalance(NFTimableContractInstance.address), 'ether');
         // console.log("balanceBeforeTransfer="+balanceBeforeTransfer);
         let result = await NFTimableContractInstance.transferTo(user2, ethPrice, { from: user1, gas: 0 })
 
-        //Then
+        // Then
         let balanceAfterTransfer=await web3.utils.fromWei(await web3.eth.getBalance(NFTimableContractInstance.address), 'ether');
         // console.log("balanceAfterTransfer="+balanceAfterTransfer);
         assert.equal(result.receipt.status, true, "transferTo fail");
         assert.equal(result.logs[0].event, "EventTransferTo", "ne lance pas d\'event EventTransferTo");
         assert.equal(balanceAfterTransfer, 0, "balance error [balanceBeforeTransfer:"+balanceBeforeTransfer+"] [balanceAfterTransfer:"+balanceAfterTransfer+"]");
+
+    });
+
+    it("Je teste le une requete pour visualiser les NFTs d'un utilisateur", async () => {
+
+        //Given
+        // let id = new BN(1);
+        let amount = new BN(10);
+        let nftPriceUnit = web3.utils.toWei('0.5', "ether");
+        let ethPrice = web3.utils.toWei('1', "ether");
+        let NFTimableContractInstance = await NFTimableContract.new({ from: user1 });
+
+        await NFTimableContractInstance.createCollectible(new BN(1), amount, nftPriceUnit, { from: user1 });
+        await NFTimableContractInstance.createCollectible(new BN(2), amount, nftPriceUnit, { from: user1 });
+        await NFTimableContractInstance.buy(new BN(1), new BN(2), { from: user2, to: NFTimableContractInstance.address, value: ethPrice, gas: 0 })
+        await NFTimableContractInstance.buy(new BN(2), new BN(2), { from: user2, to: NFTimableContractInstance.address, value: ethPrice, gas: 0 })
+
+        //when 
+        let balanceBeforeTransfer=await web3.utils.fromWei(await web3.eth.getBalance(NFTimableContractInstance.address), 'ether');
+        // console.log("balanceBeforeTransfer="+balanceBeforeTransfer);
+        
+        result = await NFTimableContractInstance.balanceOfBatch([user2,user2], [1,2], { from: user1, gas: 0 });
+        console.log("user 2, nb collection id1:"+result[0]);
+        console.log("user 2, nb collection id2:"+result[1]);
+
+        //Then
+        // console.log("balanceAfterTransfer="+balanceAfterTransfer);
+        assert.equal(result[0], 2, "id1 quantité erreur");
+        assert.equal(result[1], 2, "id1 quantité erreur");
 
     });
 

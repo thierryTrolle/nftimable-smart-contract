@@ -3,7 +3,7 @@
 [NFTimable](https://www.nftimable.com) is a platform that offers the possibility to buy non-fungible tokens (NFTs) created on the Ethereum Blockchain representing different categories of properties (real estate, parking, business, arts, renewable energies...).
 This project is the solidity smartcontract that manages the NFTs.
 
-## documentation
+## Documentation
 
 The documentation is generated with [solidity-docgen](https://github.com/OpenZeppelin/solidity-docgen).
 
@@ -16,7 +16,27 @@ personalize template with [contract.hbs](https://github.com/thierryTrolle/nftima
 
 Current documentation can be viewed [here](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/docgen/SUMMARY.md)  (note: internal link does not work on github, prefer your markdown client).
 
-## prerequisite
+## Feature 
+
+Note a graphical user interface is available to test the functionalities [here](https://github.com/thierryTrolle/nftimable-front).
+
+* `NFImableContract.createCollectible(uint256 id, uint256 amount, uint256 nftPriceUnit)` : Create NFT collection.
+
+* `NFImableContract.buy(uint256 id, uint256 amountNFT)`: Buy NFT of collection.
+
+* `NFImableContract.activateResellID(uint256 id, bool activate)`: activate collection for resell. NFTs can only be resold when the entire collection is sold.
+
+* `NFImableContract.isIdActivateForResell(uint256 id)`: is activate collectible for resell, NFTs can only be resold when the entire collection is sold.  
+
+* `NFImableContract.reSell(uint256 id, uint256 amountNFT)`: Activate a collection for resell, withdraw is manage by back when the NFT is actually resold 
+        
+* `NFImableContract.withdraw()`: Withdraw ETH after resold.
+
+* `NFImableContract.transferTo(address payable addressToTransfer, uint256 amountToWithdraw)`: Transfer eth from contract to address.
+
+* `NFTimableContractInstance.balanceOfBatch(address[] memory accounts, uint256[] memory ids)`: have accounts of NFT by user and collectionIds
+
+## Prerequisite
 
 you need to install the following components:
 (command line is for debian system :))

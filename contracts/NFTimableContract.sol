@@ -81,7 +81,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         emit EventActivatedResellID(id,activate);
     }
 
-    /// @dev activate collectible for resell, NFTs can only be resold when the entire collection is sold. 
+    /// @dev is activate collectible for resell, NFTs can only be resold when the entire collection is sold. 
     /// @param id  id of collection.
     /// @return  true if collection activate for resell
     function isIdActivateForResell(uint256 id) public view returns (bool){
@@ -115,7 +115,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         Eventwithdrawal(msg.sender,amountToWithdraw);
     }
 
-    /// @dev transfer eth from contrat to address
+    /// @dev transfer eth from contract to address
     /// @param addressToTransfer  address that receives the funds  
     /// @param amountToWithdraw  amount in ETH
     function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant (){
