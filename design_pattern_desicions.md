@@ -1,6 +1,6 @@
 # NFTimable Smartcontract design Pattern
 
-[NFTimable](https://www.nftimable.com) is a platform that offers the possibility to buy non-fungible tokens (NFTs) created on the Ethereum Blockchain representing different categories of properties (real estate, parking, business, arts, renewable energies...).
+[NFTimable](https://www.nftimable.com) is a platform that offers the possibility to buy non-fungible tokens (NFTs) created on the Ethereum Blockchain representing different categories of properties (real estate, parking, business, arts, renewable energies).More information in our [white paper](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/white_paper_v1.pdf).
 
 ## Design pattern choice :
 NFTimable uses NFT, after studying different standards it appeared that the [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155) created by ENJIN was the most suitable for our needs: 

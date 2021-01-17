@@ -1,7 +1,8 @@
 # NFTimable Smartcontract on Ethereum
 
-[NFTimable](https://www.nftimable.com) is a platform that offers the possibility to buy non-fungible tokens (NFTs) created on the Ethereum Blockchain representing different categories of properties (real estate, parking, business, arts, renewable energies...).
-This project is the solidity smartcontract that manages the NFTs.
+[NFTimable](https://www.nftimable.com) is a platform that offers the possibility to buy non-fungible tokens (NFTs) created on the Ethereum Blockchain representing different categories of properties (real estate, parking, business, arts, renewable energies). More information in our [white paper](https://github.com/thierryTrolle/nftimable-smart-contract/blob/master/white_paper_v1.pdf).
+
+This project is the solidity smartcontract that manages the NFTs. 
 
 ## Documentation
 
