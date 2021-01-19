@@ -65,7 +65,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
         require(nftPriceUnitById[id]!=0,"NFTIMABLE:Price doesn't exist");
         uint256 price = nftPriceUnitById[id].mul(amountNFT);
 
-        require(msg.value==price,"NFTIMABLE:Not enought amount");
+        require(msg.value==price,"NFTIMABLE:the amount sent is not correct");
         
         safeTransferFrom(address(this), msg.sender, id, amountNFT, "");
 
