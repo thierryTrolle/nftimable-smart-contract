@@ -10,11 +10,11 @@ This project is the solidity smartcontract that manages the NFTs.
 
 * The contract uses for the code security the [openzeppelin](https://github.com/OpenZeppelin) library, see SafeMath Ownable ReentrancyGuard. The version used is not audited but the previous version is. The code will still need to be audited before deployment.
 
-* NFTimableContract.createCollectible can call by only owner
+* NFTimableContract.createCollectible can call by only [owner](https://github.com/fravoll/solidity-patterns/blob/master/docs/access_restriction.md).
 
-* NFTimableContract.buy/NFTimableContract.resell : precaution for the transfer which is only possible for all methods that use allowTransfer modifier. To prevent reentrancy allowTransfer uses a require of the atomic state _unlockedTransfer in ERC1155NFTimable.
+* NFTimableContract.buy/NFTimableContract.resell : precaution for the transfer which is only possible for all methods that use allowTransfer modifier. To prevent [reentrancy](https://medium.com/@gus_tavo_guim/reentrancy-attack-on-smart-contracts-how-to-identify-the-exploitable-and-an-example-of-an-attack-4470a2d8dfe4) allowTransfer uses a require of the atomic state _unlockedTransfer in ERC1155NFTimable.
 
 
-* NFTimableContract.withdraw() : use nonReentrant protection.
+* NFTimableContract.withdraw() : use nonReentrant protection. We use [Pull over Push](https://github.com/fravoll/solidity-patterns/blob/master/docs/pull_over_push.md) pattern for withdraw.
 
 * NFTimableContract.transferTo() : use onlyOwner nonReentrant.
