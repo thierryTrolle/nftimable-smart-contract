@@ -112,7 +112,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
 
         withdrawByAddress[msg.sender]=0;
 
-        Eventwithdrawal(msg.sender,amountToWithdraw);
+        emit Eventwithdrawal(msg.sender,amountToWithdraw);
     }
 
     /// @dev transfer eth from contract to address
