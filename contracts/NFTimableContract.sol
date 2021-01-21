@@ -119,7 +119,7 @@ contract NFTimableContract is ERC1155NFTimable, ERC1155Holder, Ownable, Reentran
     /// @param addressToTransfer  address that receives the funds  
     /// @param amountToWithdraw  amount in ETH
     function transferTo(address payable addressToTransfer, uint256 amountToWithdraw) public onlyOwner nonReentrant (){
-        require(address(this).balance>=amountToWithdraw,"NFTIMABLE:Not enought amount to transfertTo");
+        require(address(this).balance>amountToWithdraw,"NFTIMABLE:Not enought amount to transfertTo");
         addressToTransfer.transfer(amountToWithdraw);
         emit EventTransferTo(addressToTransfer, amountToWithdraw);
     }
